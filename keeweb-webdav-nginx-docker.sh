@@ -24,8 +24,6 @@ auth_basic_user_file="${tmp[7]}"
 htpasswd_user="${tmp[8]}" 
 htpasswd_password="${tmp[9]}" 
 
-sudo apt install apache2-utils -y
-
 rm -rf keeweb
 
 git clone -b gh-pages https://github.com/keeweb/keeweb.git
@@ -83,12 +81,23 @@ cat > default_config.json <<EOF
 }
 EOF
 
+cp default_config.json /var/www
+
 ## and then make keeweb use this default configure file
 sed -i 's#<meta name="kw-config" content="(no-config)">#<meta name="kw-config" content="default_config.json">#' keeweb/index.html
 
-cp -r webdav keeweb
 
-echo $(htpasswd -nb $htpasswd_user $htpasswd_password) | sed -e s/\\$/\\$\\$/g > htpasswd/htpasswd_private
+mkdir -p /var/www/webdav/dav
+
+cp -r /keeweb/* /var/www
+
+rm -rf /var/www/html
+
+ls -als /var/www/
+
+mkdir /htpasswd
+
+echo $(htpasswd -nb $htpasswd_user $htpasswd_password) | sed -e s/\\$/\\$\\$/g > /htpasswd/htpasswd_private
 
 echo $PWD
 
@@ -129,8 +138,3 @@ server {
         }
 }
 EOF
-
-cd ../../../
-
-docker build -t keeweb-test .
-docker run -p 80:80 -p 443:443 -v $PWD/etc/nginx/conf.d:/etc/nginx/conf.d -v $PWD/htpasswd/htpasswd_private:/htpasswd/htpasswd_private -v $PWD/certs:/certs -v $PWD/keystore.kdbx:/var/www/webdav/keystore.kdbx -v $PWD/default_config.json:/var/www/default_config.json keeweb-test
