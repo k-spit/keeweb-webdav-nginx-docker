@@ -1,0 +1,7 @@
+keeweb
+certs
+etc/nginx/conf.d/
+htpasswd
+keystore.kdbx
+default_config.json
+default.conf
