@@ -6,7 +6,7 @@ Install nginx-full (for webDAV support)
 
 `apt install nginx-full`
 
-## Create [`keeweb.properties`](keeweb.properties) file
+## Create [`keeweb.properties`](keeweb_example.properties) file
 
 ## Usage
 Run script:
